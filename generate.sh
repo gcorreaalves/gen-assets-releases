@@ -5,17 +5,27 @@ FILES="assets index.html"
 LATEST=""
 
 create_version(){
-  echo -e "Version - $2\n"
+  echo -e "Version - $1\n"
 
-  echo -e "Creating version directory: $2\n"
-  mkdir releases/$2
+  echo -e "Creating version directory: $1\n"
+  mkdir releases/$1
 
-  echo -e "Checkout to version: $2\n"
+  echo -e "Checkout to version: $1\n"
   git checkout $1
 
-  echo -e "Copying the files to directory release\n"
-  cp -r $FILES releases/$2
+  #echo -e "Generating the release files\n"
+  #grunt/gulp
 
+  echo -e "Copying the files to directory release\n"
+  cp -r $FILES releases/$1
+
+  echo -e "__________________________\n"
+}
+
+create_latest_version(){
+  echo -e "Copying the files to latest directory\n"
+  mkdir releases/latest
+  cp -r releases/$LATEST/* releases/latest
   echo -e "__________________________\n"
 }
 
@@ -24,10 +34,10 @@ rm -r releases; mkdir releases
 
 for OUTPUT in $(git tag)
 do
-  create_version $OUTPUT $OUTPUT
+  create_version $OUTPUT
   LATEST=$OUTPUT
 done
 
-create_version $LATEST 'latest'
+create_latest_version
 
 git checkout $CURRENT_BRANCH
